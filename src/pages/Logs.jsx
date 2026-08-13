@@ -32,7 +32,7 @@ const MOODS = [
 const emptyForm = () => ({ date: todayKey(), title: "", content: "", tags: "", mood: "happy", editingId: null });
 
 export default function Logs() {
-  const { state, todayInfo, saveLog, deleteLog, pushToast, saveReminder, saveMemo } = useStore();
+  const { state, todayInfo, saveLog, deleteLog, pushToast, saveReminder, saveMemo, saveMemoTop } = useStore();
   const today = todayKey();
   const [form, setForm] = useState(emptyForm);
   const [search, setSearch] = useState("");
@@ -41,6 +41,7 @@ export default function Logs() {
   const [confirmId, setConfirmId] = useState(null);
   const [reminderText, setReminderText] = useState(state.reminder?.date === today ? state.reminder.text : "");
   const [memoText, setMemoText] = useState(state.memo ?? "");
+  const [memoTopText, setMemoTopText] = useState(state.memoTop ?? "");
   const reminderForTomorrow = state.reminder?.date === today;
   const yesterday = addDaysKey(today, -1);
   const yesterdayReminder = state.reminder?.date === yesterday ? state.reminder.text : "";
@@ -253,8 +254,8 @@ export default function Logs() {
           )}
         </BorderGlow>
 
-                <BorderGlow
-          className="p-6 md:p-7"
+        <BorderGlow
+          className="p-6 md:p-7 flex flex-col"
           backgroundColor="rgba(10, 13, 21, 0.6)"
           borderRadius={22}
           glowRadius={36}
@@ -276,23 +277,24 @@ export default function Logs() {
             长期保留的笔记，随时更改，一直陪着你。
           </p>
           <textarea
-            className="field mt-4 flex-1 min-h-[110px] resize-y leading-relaxed"
+            className="field mt-4 flex-1 min-h-[150px] resize-y leading-relaxed"
             placeholder="记下想长期保留的想法、清单、灵感……"
-            value={memoText}
+            value={memoTopText}
             maxLength={2000}
-            onChange={(e) => setMemoText(e.target.value)}
+            onChange={(e) => setMemoTopText(e.target.value)}
           />
           <div className="mt-4 flex items-center justify-between gap-3 relative">
-            <span className="text-xs text-inkfaint tabular-nums">{memoText.length}/2000</span>
-            <button className="btn btn-line !py-2 !px-5 text-sm" onClick={() => saveMemo(memoText)}>
+            <span className="text-xs text-inkfaint tabular-nums">{memoTopText.length}/2000</span>
+            <button className="btn btn-line !py-2 !px-5 text-sm" onClick={() => saveMemoTop(memoTopText)}>
               <Check size={14} weight="bold" /> 保存
             </button>
           </div>
         </BorderGlow>
-      </section>
+
+              </section>
 
       {/* 板块一：今日手记 */}
-      <section ref={editorRef} className="scroll-mt-24 mt-8">
+      <section ref={editorRef} className="scroll-mt-24 mt-8 grid lg:grid-cols-[minmax(0,1fr)_340px] gap-6 items-stretch">
                 <BorderGlow
           className="p-7 md:p-10"
           backgroundColor="rgba(10, 13, 21, 0.6)"
@@ -401,6 +403,43 @@ export default function Logs() {
               </div>
             </div>
           </form>
+        </BorderGlow>
+
+        <BorderGlow
+          className="p-6 md:p-7 flex flex-col"
+          backgroundColor="rgba(10, 13, 21, 0.6)"
+          borderRadius={22}
+          glowRadius={36}
+          glowColor="40 80 80"
+          glowIntensity={1}
+          edgeSensitivity={30}
+          coneSpread={25}
+          colors={["#e9b35f", "#6fd0bb", "#f0a868"]}
+        >
+          <div
+            className="absolute -top-20 -right-16 w-56 h-56 rounded-full pointer-events-none"
+            style={{ background: "radial-gradient(circle, rgba(111,208,187,0.08), transparent 70%)" }}
+          />
+          <div className="flex items-center gap-2.5 relative">
+            <Notebook size={18} className="text-teal" />
+            <h2 className="font-display font-semibold text-xl tracking-tight">备忘录</h2>
+          </div>
+          <p className="mt-2 text-xs text-inkfaint leading-relaxed relative">
+            长期保留的笔记，随时更改，一直陪着你。
+          </p>
+          <textarea
+            className="field mt-4 flex-1 min-h-[300px] resize-y leading-relaxed"
+            placeholder="记下想长期保留的想法、清单、灵感……"
+            value={memoText}
+            maxLength={2000}
+            onChange={(e) => setMemoText(e.target.value)}
+          />
+          <div className="mt-4 flex items-center justify-between gap-3 relative">
+            <span className="text-xs text-inkfaint tabular-nums">{memoText.length}/2000</span>
+            <button className="btn btn-line !py-2 !px-5 text-sm" onClick={() => saveMemo(memoText)}>
+              <Check size={14} weight="bold" /> 保存
+            </button>
+          </div>
         </BorderGlow>
       </section>
 

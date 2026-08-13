@@ -15,6 +15,7 @@ function defaultState() {
     inventory: [],
     reminder: { date: null, text: "" },
     memo: "",
+    memoTop: "",
     quoteIndex: 0,
   };
 }
@@ -154,6 +155,11 @@ export function StoreProvider({ children }) {
     pushToast("备忘录已保存", "teal");
   }
 
+  function saveMemoTop(text) {
+    setState((s) => ({ ...s, memoTop: text }));
+    pushToast("备忘录已保存", "teal");
+  }
+
   const today = todayKey();
   const todayInfo = useMemo(() => {
     const loginToday = state.loginRewards[today] || null;
@@ -180,6 +186,7 @@ export function StoreProvider({ children }) {
       setQuoteIndex,
       saveReminder,
       saveMemo,
+      saveMemoTop,
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [state, todayInfo, toasts]
